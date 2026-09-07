@@ -1,0 +1,29 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "testRunner": "vitest",
+  "vitest": {
+    "configFile": "vitest.mutation.config.ts",
+    "related": false
+  },
+  "mutate": [
+    "src/app/webapp-common/experiments/containers/experiment-info-execution/execution-requirements-state.ts"
+  ],
+  "coverageAnalysis": "perTest",
+  "disableTypeChecks": false,
+  "reporters": [
+    "clear-text",
+    "html",
+    "json"
+  ],
+  "htmlReporter": {
+    "fileName": "reports/mutation/execution/index.html"
+  },
+  "jsonReporter": {
+    "fileName": "reports/mutation/execution/mutation.json"
+  },
+  "thresholds": {
+    "high": 100,
+    "low": 90,
+    "break": 90
+  }
+}
