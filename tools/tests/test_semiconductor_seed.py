@@ -3,11 +3,12 @@ from __future__ import annotations
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import numpy as np
 
-from tools.semiconductor_seed.config import Settings
+from tools.semiconductor_seed.clearml_gateway import ClearmlGateway
+from tools.semiconductor_seed.config import DATASET_NAME, PROJECT_ROOT, Settings
 from tools.semiconductor_seed.dataset_seeding import seed_datasets
 from tools.semiconductor_seed.domain import DatasetVersion, GeneratedDataset
 from tools.semiconductor_seed.generator import generate_dataset
@@ -124,6 +125,41 @@ class SemiconductorDatasetSeedingTest(unittest.TestCase):
                     ("2.0.0", "dataset-1.0.0"),
                 ],
             )
+
+
+class ClearmlGatewayTest(unittest.TestCase):
+    @patch("tools.semiconductor_seed.clearml_gateway.Dataset.create")
+    @patch("tools.semiconductor_seed.clearml_gateway.Dataset.get")
+    def test_reuses_existing_dataset_without_requiring_seed_tag(
+        self,
+        get_mock: Mock,
+        create_mock: Mock,
+    ) -> None:
+        existing = Mock(id="existing-dataset-id")
+        get_mock.return_value = existing
+        gateway = ClearmlGateway.__new__(ClearmlGateway)
+        dataset = GeneratedDataset(
+            definition=DatasetVersion(
+                version="1.0.0",
+                row_count=0,
+                random_seed_offset=0,
+                description="Existing dataset",
+            ),
+            csv_path=Path("unused.csv"),
+            features=np.empty((0, 0)),
+            targets=np.empty(0),
+        )
+
+        dataset_id = gateway.ensure_dataset(dataset)
+
+        self.assertEqual(dataset_id, "existing-dataset-id")
+        get_mock.assert_called_once_with(
+            dataset_project=PROJECT_ROOT,
+            dataset_name=DATASET_NAME,
+            dataset_version="1.0.0",
+            only_completed=True,
+        )
+        create_mock.assert_not_called()
 
 
 class SemiconductorScenarioTest(unittest.TestCase):

@@ -177,7 +177,6 @@ class ClearmlGateway:
                 dataset_project=PROJECT_ROOT,
                 dataset_name=DATASET_NAME,
                 dataset_version=version,
-                dataset_tags=(SEED_TAG,),
                 only_completed=True,
             )
         except ValueError:
@@ -193,4 +192,3 @@ class ClearmlGateway:
             "Synthetic semiconductor quality classification experiment. "
             f"Model={spec.model_kind}, dataset={spec.dataset_version}."
         )
-
