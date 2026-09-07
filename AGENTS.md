@@ -1,0 +1,1 @@
+AGENTS.local.mdを参照せよ

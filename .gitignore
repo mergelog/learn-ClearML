@@ -1,0 +1,17 @@
+.env
+apps/web/.env
+.idea/
+.vscode/
+node_modules/
+apps/web/node_modules/
+apps/web/build/
+apps/web/.angular/
+coverage/
+playwright-report/
+test-results/
+.venv/
+.generated/
+__pycache__/
+*.py[cod]
+
+AGENTS.local.md

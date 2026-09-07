@@ -1,0 +1,169 @@
+name: stackup-clearml
+
+services:
+  apiserver:
+    image: ${CLEARML_SERVER_IMAGE:-clearml/server:2.4.0}
+    command: [apiserver]
+    restart: unless-stopped
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      fileserver:
+        condition: service_started
+    environment:
+      CLEARML_ELASTIC_SERVICE_HOST: elasticsearch
+      CLEARML_ELASTIC_SERVICE_PORT: 9200
+      CLEARML_MONGODB_SERVICE_HOST: mongo
+      CLEARML_MONGODB_SERVICE_PORT: 27017
+      CLEARML_REDIS_SERVICE_HOST: redis
+      CLEARML_REDIS_SERVICE_PORT: 6379
+      CLEARML_SERVER_DEPLOYMENT_TYPE: linux
+      # Keep a fresh learning environment free of ClearML's example data.
+      CLEARML__apiserver__pre_populate__enabled: "false"
+      CLEARML__apiserver__pre_populate__zip_files: /opt/clearml/db-pre-populate
+      CLEARML__apiserver__pre_populate__artifacts_path: /mnt/fileserver
+      CLEARML__services__async_urls_delete__enabled: "true"
+      CLEARML__services__async_urls_delete__fileserver__url_prefixes: '["http://localhost:${CLEARML_FILES_PORT:-8081}"]'
+    ports:
+      - "${CLEARML_API_PORT:-8008}:8008"
+    volumes:
+      - clearml-logs:/var/log/clearml
+      - clearml-config:/opt/clearml/config
+      - clearml-files:/mnt/fileserver
+    networks: [backend, frontend]
+
+  fileserver:
+    image: ${CLEARML_SERVER_IMAGE:-clearml/server:2.4.0}
+    command: [fileserver]
+    restart: unless-stopped
+    environment:
+      CLEARML__fileserver__delete__allow_batch: "true"
+    ports:
+      - "${CLEARML_FILES_PORT:-8081}:8081"
+    volumes:
+      - clearml-logs:/var/log/clearml
+      - clearml-config:/opt/clearml/config
+      - clearml-files:/mnt/fileserver
+    networks: [backend, frontend]
+
+  webserver:
+    image: ${CLEARML_SERVER_IMAGE:-clearml/server:2.4.0}
+    command: [webserver]
+    restart: unless-stopped
+    depends_on:
+      apiserver:
+        condition: service_started
+    ports:
+      - "${CLEARML_WEB_PORT:-8080}:80"
+    networks: [backend, frontend]
+
+  async-delete:
+    image: ${CLEARML_SERVER_IMAGE:-clearml/server:2.4.0}
+    restart: unless-stopped
+    depends_on:
+      apiserver:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      CLEARML_ELASTIC_SERVICE_HOST: elasticsearch
+      CLEARML_ELASTIC_SERVICE_PORT: 9200
+      CLEARML_MONGODB_SERVICE_HOST: mongo
+      CLEARML_MONGODB_SERVICE_PORT: 27017
+      CLEARML_REDIS_SERVICE_HOST: redis
+      CLEARML_REDIS_SERVICE_PORT: 6379
+      PYTHONPATH: /opt/clearml/apiserver
+      CLEARML__services__async_urls_delete__fileserver__url_prefixes: '["http://localhost:${CLEARML_FILES_PORT:-8081}"]'
+    entrypoint:
+      - python3
+      - -m
+      - jobs.async_urls_delete
+      - --fileserver-host
+      - http://fileserver:8081
+    volumes:
+      - clearml-logs:/var/log/clearml
+      - clearml-config:/opt/clearml/config
+    networks: [backend]
+
+  elasticsearch:
+    image: elasticsearch:8.19.9
+    restart: unless-stopped
+    environment:
+      bootstrap.memory_lock: "true"
+      cluster.name: clearml
+      discovery.type: single-node
+      ES_JAVA_OPTS: "-Xms2g -Xmx2g"
+      http.compression_level: "7"
+      node.name: clearml
+      xpack.security.enabled: "false"
+      cluster.routing.allocation.disk.watermark.low: 500mb
+      cluster.routing.allocation.disk.watermark.high: 500mb
+      cluster.routing.allocation.disk.watermark.flood_stage: 500mb
+    healthcheck:
+      test: [CMD-SHELL, "curl --fail --silent http://localhost:9200/_cluster/health >/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - clearml-elasticsearch:/usr/share/elasticsearch/data
+    networks: [backend]
+
+  mongo:
+    image: mongo:8.0.15
+    restart: unless-stopped
+    command:
+      - --wiredTigerCacheSizeGB=2
+      - --setParameter
+      - internalQueryMaxBlockingSortMemoryUsageBytes=196100200
+    healthcheck:
+      test: [CMD, mongosh, --quiet, --eval, "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    volumes:
+      - clearml-mongo-db:/data/db
+      - clearml-mongo-config:/data/configdb
+    networks: [backend]
+
+  redis:
+    image: redis:8.2.3
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - clearml-redis:/data
+    networks: [backend]
+
+networks:
+  backend:
+    internal: true
+  frontend:
+
+volumes:
+  clearml-config:
+  clearml-elasticsearch:
+  clearml-files:
+  clearml-logs:
+  clearml-mongo-config:
+  clearml-mongo-db:
+  clearml-redis:

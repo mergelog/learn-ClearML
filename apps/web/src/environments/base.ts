@@ -1,0 +1,117 @@
+import versionConf from '../version.json';
+import {withDevtools} from '@angular-architects/ngrx-toolkit';
+
+export interface CommunityContext {
+  title?: string;
+  subtitle?: string;
+  background?: string;
+  backgroundPosition?: string;
+  list?: { icon: string; title: string; text: string }[];
+}
+
+export interface GettingStartedContext {
+  install?: string;
+  configure?: string;
+  packageName?: string;
+}
+
+export interface Legal {
+  TOULink?: string;
+  pricingLink?: string;
+}
+
+export interface InterfaceCustomizations {
+  clonePrefix: string;
+}
+
+export interface Environment {
+  production: boolean;
+  apiBaseUrl: string;
+  fileBaseUrl: string;
+  displayedServerUrls?: {apiServer?: string; filesServer?: string};
+  productName: string;
+  demo: boolean;
+  headerPrefix: string;
+  version: string;
+  userKey: string;
+  userSecret: string;
+  companyID: string;
+  loginNotice?: string;
+  autoLogin?: boolean;
+  whiteLabelLogo?: boolean;
+  whiteLabelLink?: any;
+  whiteLabelLoginTitle?: string;
+  whiteLabelLoginSubtitle?: string;
+  whiteLabelSlogan?: string;
+  communityServer?: boolean;
+  enterpriseServer?: boolean;
+  accountAdministration: boolean;
+  communityContext?: CommunityContext;
+  GTM_ID?: string;
+  hideUpdateNotice: boolean;
+  showSurvey: boolean;
+  plotlyURL: string;
+  slackLink: string;
+  docsLink?: string;
+  supportEmail?: string;
+  useFilesProxy: boolean;
+  branding?: {faviconUrl?: string; logo?: string; logoSmall?: string};
+  gettingStartedContext?: GettingStartedContext;
+  serverDownMessage?: string;
+  legal: Legal;
+  loginPopup?: string;
+  platformYoutubeChannel: string;
+  appsYouTubeIntroVideoId?: string;
+  newExperimentYouTubeVideoId: string;
+  baseHref?: string;
+  loginFallback?: 'password-less' | 'error'; // defaults to 'password-less'
+  displayTips: boolean;
+  onlyPasswordLogin: boolean;
+  blockUserScript?: boolean;
+  forceTheme?: 'light' | 'dark';
+  defaultTheme?: 'light' | 'dark';
+  customStyle?: string;
+  interfaceCustomization?: InterfaceCustomizations| undefined;
+  storeDevToolsFeature: typeof withDevtools,
+}
+
+export const BASE_ENV = {
+  production: true,
+  apiBaseUrl: null,
+  fileBaseUrl: null,
+  productName: 'clearml',
+  demo: false,
+  headerPrefix: 'X-Clearml',
+  version: versionConf.version,
+  userKey: '',
+  userSecret: '',
+  companyID: 'd1bd92a3b039400cbafc60a7a5b1e52b',
+  loginNotice: '',
+  autoLogin: false,
+  whiteLabelLogo: null,
+  whiteLabelLink: null,
+  whiteLabelLoginTitle: null,
+  whiteLabelLoginSubtitle: null,
+  whiteLabelSlogan: null,
+  storeDevToolsFeature: withDevtools,
+  communityContext: {
+    background: 'app/webapp-common/assets/icons/human-polygon.svg'
+  },
+  GTM_ID: null,
+  hideUpdateNotice: false,
+  showSurvey: false,
+  accountAdministration: false,
+  useFilesProxy: true,
+  legal: {TOULink: 'https://github.com/clearml/clearml-server/blob/master/LICENSE'},
+  plotlyURL: 'app/webapp-common/assets/plotly-2.35.0.min.js',
+  slackLink: 'https://joinslack.clear.ml',
+  docsLink: 'https://clear.ml/docs',
+  supportEmail: 'support@clear.ml',
+  branding: {logo: 'assets/logo-white.svg?v=7', logoSmall: 'assets/small-logo-white.svg?=2'},
+  serverDownMessage: 'The ClearML server is currently unavailable.<BR>' +
+    'Please try to reload this page in a little while.<BR>' +
+    'If the problem persists, verify your network connection is working and check the ClearML server logs for possible errors',
+  platformYoutubeChannel: 'https://www.youtube.com/c/ClearML/featured',
+  newExperimentYouTubeVideoId: 's3k9ntmQmD4',
+  displayTips: true,
+} as Environment;

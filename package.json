@@ -1,0 +1,29 @@
+{
+  "name": "stackup",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.28.1",
+  "engines": {
+    "node": ">=24.0.0",
+    "pnpm": ">=10.0.0 <11.0.0"
+  },
+  "scripts": {
+    "backend:up": "docker compose -f infra/clearml/compose.yaml up -d",
+    "backend:down": "docker compose -f infra/clearml/compose.yaml down",
+    "backend:logs": "docker compose -f infra/clearml/compose.yaml logs -f",
+    "backend:status": "docker compose -f infra/clearml/compose.yaml ps",
+    "backend:data:status": ".venv/bin/python -m tools.clearml_data_status.cli",
+    "python:setup": "virtualenv .venv && .venv/bin/python -m pip install -r tools/requirements.txt",
+    "seed": "python3 tools/seed_clearml.py",
+    "seed:semiconductor": ".venv/bin/python -m tools.semiconductor_seed.cli",
+    "seed:semiconductor:dataset": ".venv/bin/python -m tools.semiconductor_seed.dataset_cli",
+    "test": ".venv/bin/python -m unittest discover -s tools/tests -p 'test_*.py'",
+    "ml:train": ".venv/bin/python -m ml.semiconductor_quality.cli",
+    "ml:test": ".venv/bin/python -m unittest discover -s ml/tests -t . -p 'test_*.py'",
+    "web:start": "pnpm --dir apps/web start",
+    "web:build": "pnpm --dir apps/web build",
+    "web:test": "pnpm --dir apps/web test",
+    "web:lint": "pnpm --dir apps/web lint",
+    "verify": "pnpm test && pnpm ml:test && pnpm web:test && pnpm --dir apps/web e2e:typecheck && pnpm web:build"
+  }
+}
