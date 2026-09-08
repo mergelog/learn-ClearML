@@ -554,6 +554,10 @@ cancel / retry / timeout: 対象外
 - Angular再失敗原因: アプリが直接使う`@types/youtube`を推移的依存に頼っており、isolated linkerで正しく参照できなくなった
 - 修正: `@types/youtube@0.3.0`を`apps/web` の直接devDependencyに追加
 - 追加修正後の`corepack pnpm verify`は終了コード0
+- 2026-09-08: Angular再実行は`chartjs-plugin-zoom`から`hammerjs`を解決できず失敗（48 / 49 files、107 testsは成功）
+- 原因: `preserveSymlinks: true`の環境で、推移的なruntime dependencyの`hammerjs`が`apps/web/node_modules`から解決できなかった
+- 修正: `hammerjs@2.0.8`を`apps/web`の直接dependencyに追加
+- 修正後の`corepack pnpm web:test`は49 files / 108 testsとreport-widgets 3 testsが成功
 
 ## 10. Level 3昇格前の最終確認
 
