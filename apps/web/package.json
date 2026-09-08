@@ -122,6 +122,7 @@
     "@types/node": "^24.13.3",
     "@types/plotly.js": "^3.0.13",
     "@types/tinycolor2": "^1.4.6",
+    "@types/youtube": "0.3.0",
     "@vitest/coverage-v8": "^4.1.11",
     "angular-eslint": "^22.2.0",
     "eslint": "^10.9.1",

@@ -550,6 +550,10 @@ cancel / retry / timeout: 対象外
 - Angular失敗原因: pnpmのhoisted配置とAngular workspaceが不整合で、clean install時に`apps/web/node_modules`のasset参照を解決できなかった
 - 修正: tools testsのPythonを`.venv/bin/python`に統一、pnpmをisolated linkerに変更、`actions/setup-python@v6`へ更新
 - 修正後に`corepack pnpm install --force --frozen-lockfile`と`corepack pnpm verify`が終了コード0
+- 2026-09-08: 再実行でPython jobは成功。Angularは`window.YT`のTS2339で失敗
+- Angular再失敗原因: アプリが直接使う`@types/youtube`を推移的依存に頼っており、isolated linkerで正しく参照できなくなった
+- 修正: `@types/youtube@0.3.0`を`apps/web` の直接devDependencyに追加
+- 追加修正後の`corepack pnpm verify`は終了コード0
 
 ## 10. Level 3昇格前の最終確認
 
