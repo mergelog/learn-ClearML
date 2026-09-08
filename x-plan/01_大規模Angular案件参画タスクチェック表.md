@@ -545,6 +545,11 @@ cancel / retry / timeout: 対象外
 - 2026-09-08: `corepack pnpm --dir apps/web e2e:typecheck` の正常完了を確認
 - 2026-09-08: `corepack pnpm web:build` の正常完了と、direct eval、ignored bare import、SCSS budgetのwarningを確認
 - 2026-09-08: `corepack pnpm verify` で全チェックの正常完了と既知warningの再現を本人が確認
+- 2026-09-08: GitHub Actions run 34219231984は失敗。Pythonは `Run tools tests`、Angularは `Run Angular unit tests` で終了コード1。後続stepはskip。`actions/setup-python@v5` のNode.js 20 deprecated warningも確認
+- Python失敗原因: requirementsを`.venv`へinstallした後、tools testsだけsystem Pythonで実行し、`clearml`と`numpy`をimportできなかった
+- Angular失敗原因: pnpmのhoisted配置とAngular workspaceが不整合で、clean install時に`apps/web/node_modules`のasset参照を解決できなかった
+- 修正: tools testsのPythonを`.venv/bin/python`に統一、pnpmをisolated linkerに変更、`actions/setup-python@v6`へ更新
+- 修正後に`corepack pnpm install --force --frozen-lockfile`と`corepack pnpm verify`が終了コード0
 
 ## 10. Level 3昇格前の最終確認
 

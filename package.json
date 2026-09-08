@@ -17,7 +17,7 @@
     "seed": "python3 tools/seed_clearml.py",
     "seed:semiconductor": ".venv/bin/python -m tools.semiconductor_seed.cli",
     "seed:semiconductor:dataset": ".venv/bin/python -m tools.semiconductor_seed.dataset_cli",
-    "test": "python3 -m unittest discover -s tools/tests -p 'test_*.py'",
+    "test": ".venv/bin/python -m unittest discover -s tools/tests -p 'test_*.py'",
     "ml:train": ".venv/bin/python -m ml.semiconductor_quality.cli",
     "ml:test": ".venv/bin/python -m unittest discover -s ml/tests -t . -p 'test_*.py'",
     "web:start": "pnpm --dir apps/web start",
