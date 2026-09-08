@@ -558,6 +558,13 @@ cancel / retry / timeout: 対象外
 - 原因: `preserveSymlinks: true`の環境で、推移的なruntime dependencyの`hammerjs`が`apps/web/node_modules`から解決できなかった
 - 修正: `hammerjs@2.0.8`を`apps/web`の直接dependencyに追加
 - 修正後の`corepack pnpm web:test`は49 files / 108 testsとreport-widgets 3 testsが成功
+- 2026-09-08: Angular jobはunit testとE2E typecheckを通過後、production buildで複数の推移的依存と`apps/web/.env`を解決できず失敗
+- 原因: `preserveSymlinks: true`によりpnpm isolated store内のpackage実体を基準に推移的依存を解決できなかった
+- 修正: `preserveSymlinks: false`へ変更し、CIで`.env.example`から`.env`を準備するstepを追加。暫定対応だった`hammerjs`の直接dependencyは削除
+- 構造修正後の`corepack pnpm verify`は終了コード0
+- clean-room `/tmp/tmp.XnTqkhg94W`へnode_modules、.env、build生成物を除外して複製し、`pnpm install --frozen-lockfile`からAngular検証を再現
+- clean-room結果: stackup 49 files / 108 tests、report-widgets 3 tests、E2E typecheck、production buildがすべて成功
+- clean-roomのPython venv作成はローカルOSに`python3-venv`がないため未実施。ただし同じ修正後のGitHub Python jobは成功済み
 
 ## 10. Level 3昇格前の最終確認
 
