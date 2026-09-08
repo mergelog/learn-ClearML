@@ -52,7 +52,7 @@ Levelは累積条件として判定する。例えば、自力変更だけを先
 
 | ID | 学習対象 | Level | 状態 | 現在地・次の一手 |
 | --- | --- | ---: | --- | --- |
-| P0-0 | 学習ベースラインと安全網 | 0 | 読解中 | CIで変更範囲のtest / typecheck / buildを実行できるようにする |
+| P0-0 | 学習ベースラインと安全網 | 0 | 読解中 | lint負債を増やさない基準とコード読解テンプレートを確認する |
 | P0-1 | Task一覧・詳細 | 0 | 未着手 | routeからAPI、state、UIまでを1本traceする |
 | P0-2 | Queue / Agent | 0 | 未着手 | Queue投入からTask status表示までを追う |
 | P0-3 | Pipeline | 0 | 未着手 | controller、step、失敗経路を追う |
@@ -110,9 +110,18 @@ Levelは累積条件として判定する。例えば、自力変更だけを先
 - [x] Angular production buildを再現できる
 - [x] 上記を1つの共通入口から実行できる
 - [x] 変更前の実行結果と既知の失敗を記録した
-- [ ] CIで変更範囲のtest、typecheck、buildを実行できる
+- [x] CIで変更範囲のtest、typecheck、buildを実行できる
 - [ ] 新規・変更範囲でlint負債を増やさない基準を説明できる
-- [ ] 既存コード読解用の記録テンプレートを用意した
+- [x] 既存コード読解用の記録テンプレートを用意した
+
+#### Lint負債を増やさない基準
+
+- 全体baselineは2026-09-08時点で2871 errors / 56 warningsとし、既存負債として記録する
+- 新規ファイルはerror / warningともに0件を必須とする
+- 既存ファイルの変更では、変更前の同一ファイルと比較してdiagnosticを増やさない
+- 変更箇所に起因するdiagnosticは、ファイルに既存違反が残っていても解消する
+- `eslint-disable`は対象ruleと理由を局所的に記載し、ファイル全体の無効化に使わない
+- 大量の自動修正は機能変更と同じdiffへ混在させない
 
 #### Angular読解
 
@@ -565,6 +574,9 @@ cancel / retry / timeout: 対象外
 - clean-room `/tmp/tmp.XnTqkhg94W`へnode_modules、.env、build生成物を除外して複製し、`pnpm install --frozen-lockfile`からAngular検証を再現
 - clean-room結果: stackup 49 files / 108 tests、report-widgets 3 tests、E2E typecheck、production buildがすべて成功
 - clean-roomのPython venv作成はローカルOSに`python3-venv`がないため未実施。ただし同じ修正後のGitHub Python jobは成功済み
+- 2026-09-08: 修正後のGitHub ActionsでPython / Angular両jobの成功を本人が確認
+- `corepack pnpm web:lint`: 終了コード1、2927 problems（2871 errors / 56 warnings）。既存lint負債のbaselineとして記録
+- 既存コード読解用テンプレート: 本資料「9. 作業証跡」を使用
 
 ## 10. Level 3昇格前の最終確認
 
