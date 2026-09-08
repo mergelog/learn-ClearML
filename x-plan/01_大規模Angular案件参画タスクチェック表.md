@@ -52,7 +52,7 @@ Levelは累積条件として判定する。例えば、自力変更だけを先
 
 | ID | 学習対象 | Level | 状態 | 現在地・次の一手 |
 | --- | --- | ---: | --- | --- |
-| P0-0 | 学習ベースラインと安全網 | 0 | 未着手 | 変更前のtest / typecheck / buildを再現する |
+| P0-0 | 学習ベースラインと安全網 | 0 | 読解中 | CIで変更範囲のtest / typecheck / buildを実行できるようにする |
 | P0-1 | Task一覧・詳細 | 0 | 未着手 | routeからAPI、state、UIまでを1本traceする |
 | P0-2 | Queue / Agent | 0 | 未着手 | Queue投入からTask status表示までを追う |
 | P0-3 | Pipeline | 0 | 未着手 | controller、step、失敗経路を追う |
@@ -78,7 +78,7 @@ Levelは累積条件として判定する。例えば、自力変更だけを先
 
 | ID | 学習対象 | Agent実装 | コード読解 | 自力説明 | 自力変更 | テスト | Level | 状態 |
 | --- | --- | :---: | :---: | :---: | :---: | :---: | ---: | --- |
-| P0-0 | 学習ベースラインと安全網 | - | [ ] | [ ] | [ ] | [ ] | 0 | 未着手 |
+| P0-0 | 学習ベースラインと安全網 | - | [ ] | [ ] | [ ] | [ ] | 0 | 読解中 |
 | P0-1 | Task一覧・詳細 | - | [ ] | [ ] | [ ] | [ ] | 0 | 未着手 |
 | P0-2 | Queue / Agent | [ ] | [ ] | [ ] | [ ] | [ ] | 0 | 未着手 |
 | P0-3 | Pipeline | [ ] | [ ] | [ ] | [ ] | [ ] | 0 | 未着手 |
@@ -104,12 +104,12 @@ Levelは累積条件として判定する。例えば、自力変更だけを先
 
 #### 実行基盤
 
-- [ ] Python testを再現できる
-- [ ] Angular unit testを再現できる
-- [ ] E2E typecheckを再現できる
-- [ ] Angular production buildを再現できる
-- [ ] 上記を1つの共通入口から実行できる
-- [ ] 変更前の実行結果と既知の失敗を記録した
+- [x] Python testを再現できる
+- [x] Angular unit testを再現できる
+- [x] E2E typecheckを再現できる
+- [x] Angular production buildを再現できる
+- [x] 上記を1つの共通入口から実行できる
+- [x] 変更前の実行結果と既知の失敗を記録した
 - [ ] CIで変更範囲のtest、typecheck、buildを実行できる
 - [ ] 新規・変更範囲でlint負債を増やさない基準を説明できる
 - [ ] 既存コード読解用の記録テンプレートを用意した
@@ -457,14 +457,14 @@ Levelは累積条件として判定する。例えば、自力変更だけを先
 コーディングエージェントへ依頼する前に記入し、1回の作業範囲を限定する。
 
 ```text
-日付:
-対象ID:
-対象ユースケース:
-今回チェックする項目:
-対象外:
-代表的な正常条件:
-代表的な失敗条件:
-完了条件:
+日付: 2026-09-08
+対象ID: P0-0
+対象ユースケース: 変更前の品質チェックを再現し、安全な変更の出発点を固定する
+今回チェックする項目: Python test、Angular unit test、E2E typecheck、Angular production build、既知のwarning、共通実行入口、CI構成
+対象外: E2E実行、ClearML Server起動、機能改修、既知warningの解消
+代表的な正常条件: 各コマンドが終了コード0で完了する
+代表的な失敗条件: test failure、TypeScript error、production build error、依存関係または実行環境の不備
+完了条件: 本人が各4系統と共通実行入口を再現し、結果と既知warningの意味を説明できる
 ```
 
 ## 9. 作業証跡
@@ -498,6 +498,54 @@ cancel / retry / timeout:
 関連するコード・テスト・資料:
 ```
 
+### 2026-09-08 P0-0 変更前ベースライン
+
+```text
+日付: 2026-09-08
+対象ID: P0-0
+開始時Level: 0
+終了時Level: 0
+
+Agentが実装した内容: ルートの `package.json` に共通実行入口 `verify` を追加し、`.github/workflows/quality.yml` にPython / AngularのCI jobを追加
+自分で読んだ主要ファイル: 未実施
+確認した処理経路: package.json -> apps/web/package.json -> Angular CLI / Vitest / TypeScript / production build
+stateの所有者: 未確認
+API / domain / view modelの境界: 未確認
+正常時のstate遷移: 対象外
+失敗時のstate遷移: 対象外
+cancel / retry / timeout: 対象外
+
+自分で加えた変更: なし
+自分で追加したテスト: なし
+意図的に壊したテストと確認結果: 未実施
+実行した確認コマンドと結果:
+- corepack pnpm test: 16 tests passed
+- corepack pnpm ml:test: 199 tests passed
+- corepack pnpm web:test: stackup 108 tests / 49 files passed、report-widgets 3 tests / 1 file passed
+- corepack pnpm --dir apps/web e2e:typecheck: 終了コード0
+- corepack pnpm web:build: 終了コード0
+- corepack pnpm verify: 追加後にAgentが実行し、5スクリプトすべて成功（終了コード0）
+- .github/workflows/quality.yml: PyYAMLで構文解析成功
+- CI対象コマンドのローカル再確認: tools 16 tests、ML 199 tests、E2E typecheckが成功（Angular unit / buildは `verify` で確認済み）
+
+説明できるようになったこと: AgentはルートとAngular側のコマンド境界、変更前の成否を確認した
+まだ説明できないこと: 各チェックの対象範囲、Angular起動・route・state・API経路
+残る疑問とリスク:
+- Angular unit testは成功するが NG01354、NG0318、NG0953、as-split warningが出力される
+- production buildは成功するが ngx-markdown-editorのignored importと3ファイルのSCSS budget warningが出力される
+- production buildは成功するが、生成bundle内のdirect evalに対するsecurity / minification warningが出力される（発生元は未特定）
+- CIはローカル構文検査と対象コマンド検証のみで、GitHub Actions上では未実行
+次の一手: 本人がCI差分とjob / step / `&&` の責務の違いを読み、GitHub Actions上の実行結果を確認する
+関連するコード・テスト・資料: package.json、apps/web/package.json、apps/web/angular.json、apps/web/vitest.config.ts、apps/web/e2e/tsconfig.json
+```
+
+本人による追加確認:
+
+- 2026-09-08: `corepack pnpm test`、`corepack pnpm ml:test`、`corepack pnpm web:test` の正常完了を確認
+- 2026-09-08: `corepack pnpm --dir apps/web e2e:typecheck` の正常完了を確認
+- 2026-09-08: `corepack pnpm web:build` の正常完了と、direct eval、ignored bare import、SCSS budgetのwarningを確認
+- 2026-09-08: `corepack pnpm verify` で全チェックの正常完了と既知warningの再現を本人が確認
+
 ## 10. Level 3昇格前の最終確認
 
 対象項目をLevel 3および完了へ変更する直前に確認する。
@@ -514,4 +562,3 @@ cancel / retry / timeout:
 - [ ] API modelから画面表示までの変換を説明できる
 - [ ] 変更の影響範囲と残るリスクを説明できる
 - [ ] 学び、設計判断、証跡を記録した
-

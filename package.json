@@ -23,6 +23,7 @@
     "web:start": "pnpm --dir apps/web start",
     "web:build": "pnpm --dir apps/web build",
     "web:test": "pnpm --dir apps/web test",
-    "web:lint": "pnpm --dir apps/web lint"
+    "web:lint": "pnpm --dir apps/web lint",
+    "verify": "pnpm test && pnpm ml:test && pnpm web:test && pnpm --dir apps/web e2e:typecheck && pnpm web:build"
   }
 }
