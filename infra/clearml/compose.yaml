@@ -22,6 +22,11 @@ services:
       CLEARML_REDIS_SERVICE_HOST: redis
       CLEARML_REDIS_SERVICE_PORT: 6379
       CLEARML_SERVER_DEPLOYMENT_TYPE: linux
+      # Local passwordless Web login. These credentials are intentionally
+      # delivered to the browser and must not be used outside development.
+      CLEARML__secure__credentials__tests__role: "system"
+      CLEARML__secure__credentials__tests__user_key: "STACKUPDEV001ACCESSKEY000000000000"
+      CLEARML__secure__credentials__tests__user_secret: "stackup-local-passwordless-secret-00000000000000000000000000000001"
       # Keep a fresh learning environment free of ClearML's example data.
       CLEARML__apiserver__pre_populate__enabled: "false"
       CLEARML__apiserver__pre_populate__zip_files: /opt/clearml/db-pre-populate

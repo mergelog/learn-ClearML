@@ -63,7 +63,7 @@
                   [class.selected-col-header]="col?.disablePointerEvents"
                   [pReorderableColumnDisabled]="!reorderableColumns() || col?.disableDrag"
                   [pResizableColumnDisabled]="col?.disableDrag"
-                  [style.max-width]="col.style?.maxWidth ?? (!resizableColumns() && columnResizeMode() === 'fit' && col.style?.width)"
+                  [style.max-width]="col.style?.maxWidth ?? (!resizableColumns() && columnResizeMode() === 'fit' ? col.style?.width : undefined)"
                   [style.min-width]="col.style?.minWidth"
                   [style.width]="col.style?.width"
                   [class.p-datatable-frozen-column]="col?.frozen"
@@ -147,7 +147,7 @@
               [class.p-datatable-frozen-column-left]="col?.frozen && col?.alignFrozen !== 'right'"
               [class.p-datatable-frozen-column-right]="col?.frozen && col?.alignFrozen === 'right'"
               [style.min-width]="col.style?.minWidth"
-              [style.max-width]="col.style?.maxWidth ?? (!resizableColumns() && columnResizeMode() === 'fit' && col.style?.width)"
+              [style.max-width]="col.style?.maxWidth ?? (!resizableColumns() && columnResizeMode() === 'fit' ? col.style?.width : undefined)"
               [style.width]="col.style?.width">
               @if (bodyTemplate) {
                 <ng-container

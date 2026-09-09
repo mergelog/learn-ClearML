@@ -293,7 +293,8 @@ Angularのポートは [apps/web/package.json](apps/web/package.json) の `start
 ChromeのDevToolsで `Application`、`Storage` の順に開き、
 `Clear site data` を実行してCookieとLocal Storageを削除してから、ページを再読み込みしてください。
 
-`credentials.json` の `404 Not Found` は、環境設定へフォールバックするための想定された動作です。
+開発サーバーの `credentials.json` には、ユーザー名だけでログインするための
+ローカル開発用認証情報が含まれます。この認証方式は信頼できるLAN内でのみ使用してください。
 
 ## 補足
 

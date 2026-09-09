@@ -112,6 +112,11 @@
                 },
                 "src/version.json",
                 "src/configuration.json",
+                {
+                  "glob": "credentials.json",
+                  "input": ".",
+                  "output": "/"
+                },
                 "src/onboarding.json",
                 "src/env.js"
               ]
