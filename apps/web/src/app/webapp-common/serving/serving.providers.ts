@@ -8,7 +8,6 @@ import {singleGraphProviders} from '@common/shared/single-graph/single-graph.pro
 import {UserPreferences} from '@common/user-preferences';
 import {createUserPrefFeatureReducer} from '@common/core/meta-reducers/user-pref-reducer';
 import {merge, pick} from 'lodash-es';
-import {commonProjectsProviders} from '@common/projects/common-projects.providers';
 
 export const servingSyncedKeys = [
   'tableSortFields',

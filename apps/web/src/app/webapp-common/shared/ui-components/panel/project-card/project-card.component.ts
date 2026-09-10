@@ -88,15 +88,15 @@ export class ProjectCardComponent {
   }
 
   public projectClicked() {
-      console.log(120)
+      console.log(111)
       this.projectCardClicked.emit(this.project);
   }
-
-
 
   subProjectClicked(id: string) {
     this.projectCardClicked.emit({id});
   }
+
+  // memo: これをaaaに追加する
 
   prepareProjectNameForChange(projectName: string) {
     this.projectNameChanged.emit(this.project.name.substring(0, this.project.name.lastIndexOf('/') + 1) + projectName);

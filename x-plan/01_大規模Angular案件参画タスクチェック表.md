@@ -125,10 +125,10 @@ Levelは累積条件として判定する。例えば、自力変更だけを先
 
 #### Angular読解
 
-- [ ] 起動処理とroot providersを特定できる
-- [ ] root routeから対象featureのlazy routeを追える
-- [ ] container componentとpresentational componentを区別できる
-- [ ] store providerの登録箇所とscopeを説明できる
+- [x] 起動処理とroot providersを特定できる
+- [x] root routeから対象featureのlazy routeを追える
+- [x] container componentとpresentational componentを区別できる
+- [x] store providerの登録箇所とscopeを説明できる
 - [ ] action、reducer、effect、selector、serviceの配置を説明できる
 - [ ] API clientとinterceptorの呼び出しを追える
 
