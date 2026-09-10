@@ -37,7 +37,7 @@ export class MenuItemComponent {
   checked = input(false);
   sortOrder = input<number>();
   enableTooltip = input<boolean>();
-  itemClicked = output<{
+  itemClicked = output<{ // ::1
         event?: MouseEvent;
         itemValue: string;
     }>();
@@ -46,14 +46,14 @@ export class MenuItemComponent {
 
   public TABLE_SORT_ORDER = TABLE_SORT_ORDER;
 
-  itemClickedEvent(event?: MouseEvent) {
+  itemClickedEvent(event?: MouseEvent) { // ::-2
     if (!this.disabled()) {
-      this.itemClicked.emit({event, itemValue: this.itemValue()});
+      this.itemClicked.emit({event, itemValue: this.itemValue()}); // ::-1
     }
   }
 
   buttonClickedEvent(event: MouseEvent) {
-    this.itemClickedEvent(event);
+    this.itemClickedEvent(event); // ::-1
     if (this.selectable()) {
       event.stopPropagation();
     }

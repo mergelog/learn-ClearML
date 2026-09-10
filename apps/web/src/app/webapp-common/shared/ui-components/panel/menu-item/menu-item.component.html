@@ -1,9 +1,9 @@
-<div mat-menu-item [disabled]="disabled()" (click)="buttonClickedEvent($event)">
+<div mat-menu-item [disabled]="disabled()" (click)="buttonClickedEvent($event)"><!-- ::-2 -->
   <div class="item-container"  >
     @if (selectable()) {
       <mat-checkbox smClickStopPropagation data-id="customColumnsCheckbox"
                     [checked]="checked()"
-                    (change)="itemClickedEvent()">
+                    (change)="itemClickedEvent()"><!-- ::-2 -->
       </mat-checkbox>
     }
     @if (enableIcon() && iconClass()) {

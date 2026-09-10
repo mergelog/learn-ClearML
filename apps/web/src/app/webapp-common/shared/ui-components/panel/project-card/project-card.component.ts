@@ -88,6 +88,7 @@ export class ProjectCardComponent {
   }
 
   public projectClicked() {
+      console.log(120)
       this.projectCardClicked.emit(this.project);
   }
 
