@@ -21,6 +21,7 @@
     "ml:train": ".venv/bin/python -m ml.semiconductor_quality.cli",
     "ml:test": ".venv/bin/python -m unittest discover -s ml/tests -t . -p 'test_*.py'",
     "web:start": "pnpm --dir apps/web start",
+    "web:hmr": "pnpm --dir apps/web hmr",
     "web:build": "pnpm --dir apps/web build",
     "web:test": "pnpm --dir apps/web test",
     "web:lint": "pnpm --dir apps/web lint",

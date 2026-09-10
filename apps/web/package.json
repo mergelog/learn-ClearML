@@ -9,7 +9,7 @@
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --port 4200",
     "start-widgets": "ng serve --port 4201 --project report-widgets --proxy-config proxy.config.mjs --live-reload false",
-    "hmr": "ng serve --live-reload true",
+    "hmr": "ng serve --host 0.0.0.0 --port 4200 --live-reload true",
     "build": "ng build --configuration production --source-map",
     "build-dev": "node ./node_modules/.bin/ng build --extract-css=false",
     "build-widgets": "ng build --project report-widgets --configuration production",

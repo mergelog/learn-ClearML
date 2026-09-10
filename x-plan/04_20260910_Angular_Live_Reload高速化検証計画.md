@@ -246,3 +246,67 @@ source map無効化は最後の候補とし、標準設定として採用する�
 - [Angular CLI Issue #33619: 初回編集時のdependent cone](https://github.com/angular/angular-cli/issues/33619)
 - [Angular CLI Issue #24755: HMR改善議論](https://github.com/angular/angular-cli/issues/24755)
 - [Angular CLI Issue #25935: incremental rebuild性能計測](https://github.com/angular/angular-cli/issues/25935)
+
+## 11. 実施結果（2026-09-10）
+
+### 11.1 Angular build計測
+
+`project-card.component.ts`へ意味を変えないコメントを追加・変更・除去し、同一条件で比較した。計測用コメントはすべて除去済みである。
+
+| Case | baseline | `isolatedModules: true` | 改善率 |
+| --- | ---: | ---: | ---: |
+| 初期development build | 14.100秒 | 11.138秒 | 21.0% |
+| 同一TSの初回変更 | 8.994秒 | 7.444秒 | 17.2% |
+| 同一TSの2回目 | 1.296秒 | 1.189秒 | 8.3% |
+| コメント除去 | 0.904秒 | 0.901秒 | 0.3% |
+
+次を確認した。
+
+- 変更検知は即時であり、WSL2のwatch、inotify、pollingは主因ではない。
+- 初回TS変更だけが約7～9秒、同一ファイルのwarm rebuildは約1秒である。
+- Angular CLI Issue #33619で報告されている初回dependent cone型の傾向と一致する。
+- `isolatedModules`は初期buildと初回変更を改善するが、warm rebuildへの効果は小さい。
+- ブラウザのF5時間とreload後の操作可能時間は、実ブラウザで別途計測する必要がある。
+
+### 11.2 採用内容
+
+`isolatedModules: true`は本番buildへ波及させず、`tsconfig.dev.json`とAngularの`development` configurationに限定して採用した。これにより、開発時はesbuild transpilationの高速経路を利用しつつ、productionは従来の`tsconfig.app.json`を使用する。
+
+LAN公開とlive reloadを同時に有効化する起動コマンドを次に統一した。
+
+```bash
+pnpm web:hmr
+```
+
+内部では次を実行する。
+
+```bash
+ng serve --host 0.0.0.0 --port 4200 --live-reload true
+```
+
+通常の`pnpm web:start`は従来どおり`liveReload: false`であり、用途に応じて明示的に使い分ける。
+
+### 11.3 検証結果
+
+| 検証 | 結果 |
+| --- | --- |
+| `tsc -p tsconfig.app.json --noEmit` | 成功 |
+| `tsc -p tsconfig.dev.json --noEmit` | 成功 |
+| `pnpm web:hmr` initial build | 成功、10.949秒 |
+| 最終構成でのTS初回変更 | 成功、7.472秒、page reload通知済み |
+| 最終構成での同一TS warm変更 | 成功、1.223秒、page reload通知済み |
+| production build | 成功 |
+| unit test | 50 files、109 tests成功 |
+| widget test | 1 file、3 tests成功 |
+
+production buildには既存のdirect eval、side-effects、SCSS budget警告があるが、失敗および今回変更による新規errorはなかった。unit testにも既存のstderr警告があるが、すべて成功した。
+
+### 11.4 残課題
+
+初回TS変更の約7.4秒は残っている。次の優先調査は、末端Component・共通Service・barrel `index.ts`の初回変更時間を比較し、依存coneの広がりを特定することである。
+
+また、実ブラウザで次を比較し、残りの体感待ち時間がAngular rebuildとClearML runtime初期化のどちらに支配されるか確定する。
+
+1. F5からDashboard操作可能まで
+2. TS保存からDashboard操作可能まで
+3. HTML変更時に`Component update sent to client(s).`となるか

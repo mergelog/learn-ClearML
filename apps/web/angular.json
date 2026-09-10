@@ -94,6 +94,7 @@
           },
           "configurations": {
             "development": {
+              "tsConfig": "tsconfig.dev.json",
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
