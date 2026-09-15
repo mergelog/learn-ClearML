@@ -15,7 +15,7 @@ ClearML Web 内の次のような名前付きコンテンツ投影を対象に�
 - selector に一致する投影要素が実際に渡されている
 - 同名属性はあるが、対象コンポーネントの投影元にはなっていない
 
-調査対象は `apps/web/src/**/*.html`。`_old` と `node_modules` は除外した。調査時点は 2026-09-13。
+調査対象は `src/**/*.html`。`_old` と `node_modules` は除外した。調査時点は 2026-09-13。
 
 ---
 
@@ -189,7 +189,7 @@ ClearML Web では主に3形式が使われている。
 スロット定義:
 
 ```text
-apps/web/src/app/webapp-common/dashboard/containers/dashboard-experiments/
+src/app/webapp-common/dashboard/containers/dashboard-experiments/
   dashboard-experiments.component.html:3
 ```
 
@@ -203,7 +203,7 @@ apps/web/src/app/webapp-common/dashboard/containers/dashboard-experiments/
 投影元:
 
 ```text
-apps/web/src/app/features/dashboard/dashboard.component.html:5-15
+src/app/features/dashboard/dashboard.component.html:5-15
 ```
 
 ```html
@@ -235,7 +235,7 @@ RECENT TASKS 見出しの右側に表示
 スロット定義:
 
 ```text
-apps/web/src/app/webapp-common/shared/ui-components/data/table-card/
+src/app/webapp-common/shared/ui-components/data/table-card/
   table-card.component.html:10-27
 ```
 
@@ -252,7 +252,7 @@ apps/web/src/app/webapp-common/shared/ui-components/data/table-card/
 Experiment Table の投影元:
 
 ```text
-apps/web/src/app/webapp-common/experiments/dumb/experiments-table/
+src/app/webapp-common/experiments/dumb/experiments-table/
   experiments-table.component.html:216-268
 ```
 
@@ -297,7 +297,7 @@ flowchart LR
 スロット定義:
 
 ```text
-apps/web/src/app/webapp-common/nested-project-view/nested-project-view-page/
+src/app/webapp-common/nested-project-view/nested-project-view-page/
   nested-project-view-page.component.html:20-21,45
 ```
 
@@ -576,8 +576,8 @@ sm-experiment-menu-extended
 利用箇所:
 
 ```text
-apps/web/src/app/webapp-common/experiments/experiments.component.html:141-161
-apps/web/src/app/webapp-common/experiments/dumb/experiment-info-header/
+src/app/webapp-common/experiments/experiments.component.html:141-161
+src/app/webapp-common/experiments/dumb/experiment-info-header/
   experiment-info-header.component.html:85-99
 ```
 

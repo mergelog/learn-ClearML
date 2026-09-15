@@ -2,7 +2,7 @@
 
 ## 結論
 
-現時点で`apps/web`を一括して`strict: true`へ変更するのは、設定1行だけで完了する作業ではない。
+現時点でWebアプリ全体を一括して`strict: true`へ変更するのは、設定1行だけで完了する作業ではない。
 
 実測では、アプリ本体で4,495件・435ファイルにTypeScriptエラーが発生した。Report Widgetsでは、共有コードとの重複を含めて840件・62ファイルにstrict固有のエラーがあり、Widgetsだけに存在するファイルも4ファイルある。
 
@@ -22,15 +22,15 @@
 
 TypeScript 6では`strict`のデフォルト値が`true`へ変更された。現在は既存コードとの互換性を保つため、次の2ファイルで`strict: false`を明示している。
 
-- `apps/web/tsconfig.json`
-- `apps/web/src/tsconfig.json`
+- `tsconfig.json`
+- `src/tsconfig.json`
 
-最終的にstrict化する場合は、両方を`strict: true`へ変更する必要がある。Report Widgetsの`tsconfig.app.json`は`apps/web/src/tsconfig.json`を継承している。
+最終的にstrict化する場合は、両方を`strict: true`へ変更する必要がある。Report Widgetsの`tsconfig.app.json`は`src/tsconfig.json`を継承している。
 
 調査には次のコマンドを使用した。
 
 ```bash
-cd apps/web
+cd <repository-root>
 
 corepack pnpm exec tsc \
   -p tsconfig.app.json \
@@ -202,7 +202,7 @@ Stateの初期値として`null`を使う場合は、State interface側にも`nu
 }
 ```
 
-変更対象は`apps/web/tsconfig.json`と`apps/web/src/tsconfig.json`の両方。その後、本体とWidgetsのproduction build、主要画面のE2Eを必須確認とする。
+変更対象は`tsconfig.json`と`src/tsconfig.json`の両方。その後、本体とWidgetsのproduction build、主要画面のE2Eを必須確認とする。
 
 ## 段階移行で使用するstrictオプション
 

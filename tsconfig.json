@@ -1,0 +1,85 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": false,
+    "ignoreDeprecations": "6.0",
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "sourceMap": true,
+    "declaration": false,
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
+    "importHelpers": true,
+    "esModuleInterop": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "useDefineForClassFields": false,
+    "resolveJsonModule": true,
+    "lib": [
+      "ES2024",
+      "dom",
+    ],
+    "paths": {
+      "@angular/common": [
+        "node_modules/@angular/common"
+      ],
+      "@angular/core": [
+        "node_modules/@angular/core"
+      ],
+      "@angular/forms": [
+        "node_modules/@angular/forms"
+      ],
+      "@angular/platform-browser": [
+        "node_modules/@angular/platform-browser"
+      ],
+      "@angular/router": [
+        "node_modules/@angular/router"
+      ],
+      "@angular/*": [
+        "node_modules/@angular/*"
+      ],
+      "@common/*": [
+        "src/app/webapp-common/*"
+      ],
+      "@features/*": [
+        "src/app/features/*"
+      ],
+      "@ngrx/*": [
+        "node_modules/@ngrx/*"
+      ],
+      "@environments/*": [
+        "src/environments/*"
+      ],
+      "date-fns": [
+        "node_modules/date-fns"
+      ],
+      "lodash-es": [
+        "node_modules/lodash-es"
+      ],
+      "rxjs": [
+        "node_modules/rxjs"
+      ],
+      "rxjs/*": [
+        "node_modules/rxjs/*"
+      ],
+      "~/*": [
+        "src/app/*"
+      ],
+      "vitest": [
+        "node_modules/vitest"
+      ]
+    },
+    "skipLibCheck": true
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true,
+    "preserveWhitespaces": false
+  }
+}

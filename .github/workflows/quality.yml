@@ -62,14 +62,14 @@ jobs:
       - name: Install JavaScript dependencies
         run: corepack pnpm install --frozen-lockfile
 
-      - name: Prepare Angular environment
-        run: cp apps/web/.env.example apps/web/.env
+      - name: Prepare application environment
+        run: cp .env.example .env
 
       - name: Run Angular unit tests
-        run: corepack pnpm web:test
+        run: corepack pnpm test
 
       - name: Typecheck E2E tests
-        run: corepack pnpm --dir apps/web e2e:typecheck
+        run: corepack pnpm e2e:typecheck
 
       - name: Build Angular for production
-        run: corepack pnpm web:build
+        run: corepack pnpm build

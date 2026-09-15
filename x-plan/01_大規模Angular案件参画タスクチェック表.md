@@ -517,7 +517,7 @@ cancel / retry / timeout:
 
 Agentが実装した内容: ルートの `package.json` に共通実行入口 `verify` を追加し、`.github/workflows/quality.yml` にPython / AngularのCI jobを追加
 自分で読んだ主要ファイル: 未実施
-確認した処理経路: package.json -> apps/web/package.json -> Angular CLI / Vitest / TypeScript / production build
+確認した処理経路: package.json -> Angular CLI / Vitest / TypeScript / production build
 stateの所有者: 未確認
 API / domain / view modelの境界: 未確認
 正常時のstate遷移: 対象外
@@ -528,11 +528,11 @@ cancel / retry / timeout: 対象外
 自分で追加したテスト: なし
 意図的に壊したテストと確認結果: 未実施
 実行した確認コマンドと結果:
-- corepack pnpm test: 16 tests passed
+- corepack pnpm tools:test: 16 tests passed
 - corepack pnpm ml:test: 199 tests passed
-- corepack pnpm web:test: stackup 108 tests / 49 files passed、report-widgets 3 tests / 1 file passed
-- corepack pnpm --dir apps/web e2e:typecheck: 終了コード0
-- corepack pnpm web:build: 終了コード0
+- corepack pnpm test: stackup 108 tests / 49 files passed、report-widgets 3 tests / 1 file passed
+- corepack pnpm e2e:typecheck: 終了コード0
+- corepack pnpm build: 終了コード0
 - corepack pnpm verify: 追加後にAgentが実行し、5スクリプトすべて成功（終了コード0）
 - .github/workflows/quality.yml: PyYAMLで構文解析成功
 - CI対象コマンドのローカル再確認: tools 16 tests、ML 199 tests、E2E typecheckが成功（Angular unit / buildは `verify` で確認済み）
@@ -545,29 +545,29 @@ cancel / retry / timeout: 対象外
 - production buildは成功するが、生成bundle内のdirect evalに対するsecurity / minification warningが出力される（発生元は未特定）
 - CIはローカル構文検査と対象コマンド検証のみで、GitHub Actions上では未実行
 次の一手: 本人がCI差分とjob / step / `&&` の責務の違いを読み、GitHub Actions上の実行結果を確認する
-関連するコード・テスト・資料: package.json、apps/web/package.json、apps/web/angular.json、apps/web/vitest.config.ts、apps/web/e2e/tsconfig.json
+関連するコード・テスト・資料: package.json、package.json、angular.json、vitest.config.ts、e2e/tsconfig.json
 ```
 
 本人による追加確認:
 
-- 2026-09-08: `corepack pnpm test`、`corepack pnpm ml:test`、`corepack pnpm web:test` の正常完了を確認
-- 2026-09-08: `corepack pnpm --dir apps/web e2e:typecheck` の正常完了を確認
-- 2026-09-08: `corepack pnpm web:build` の正常完了と、direct eval、ignored bare import、SCSS budgetのwarningを確認
+- 2026-09-08: `corepack pnpm tools:test`、`corepack pnpm ml:test`、`corepack pnpm test` の正常完了を確認
+- 2026-09-08: `corepack pnpm e2e:typecheck` の正常完了を確認
+- 2026-09-08: `corepack pnpm build` の正常完了と、direct eval、ignored bare import、SCSS budgetのwarningを確認
 - 2026-09-08: `corepack pnpm verify` で全チェックの正常完了と既知warningの再現を本人が確認
 - 2026-09-08: GitHub Actions run 34219231984は失敗。Pythonは `Run tools tests`、Angularは `Run Angular unit tests` で終了コード1。後続stepはskip。`actions/setup-python@v5` のNode.js 20 deprecated warningも確認
 - Python失敗原因: requirementsを`.venv`へinstallした後、tools testsだけsystem Pythonで実行し、`clearml`と`numpy`をimportできなかった
-- Angular失敗原因: pnpmのhoisted配置とAngular workspaceが不整合で、clean install時に`apps/web/node_modules`のasset参照を解決できなかった
+- Angular失敗原因: pnpmのhoisted配置とAngular workspaceが不整合で、clean install時に`node_modules`のasset参照を解決できなかった
 - 修正: tools testsのPythonを`.venv/bin/python`に統一、pnpmをisolated linkerに変更、`actions/setup-python@v6`へ更新
 - 修正後に`corepack pnpm install --force --frozen-lockfile`と`corepack pnpm verify`が終了コード0
 - 2026-09-08: 再実行でPython jobは成功。Angularは`window.YT`のTS2339で失敗
 - Angular再失敗原因: アプリが直接使う`@types/youtube`を推移的依存に頼っており、isolated linkerで正しく参照できなくなった
-- 修正: `@types/youtube@0.3.0`を`apps/web` の直接devDependencyに追加
+- 修正: `@types/youtube@0.3.0`をルートpackageの直接devDependencyに追加
 - 追加修正後の`corepack pnpm verify`は終了コード0
 - 2026-09-08: Angular再実行は`chartjs-plugin-zoom`から`hammerjs`を解決できず失敗（48 / 49 files、107 testsは成功）
-- 原因: `preserveSymlinks: true`の環境で、推移的なruntime dependencyの`hammerjs`が`apps/web/node_modules`から解決できなかった
-- 修正: `hammerjs@2.0.8`を`apps/web`の直接dependencyに追加
-- 修正後の`corepack pnpm web:test`は49 files / 108 testsとreport-widgets 3 testsが成功
-- 2026-09-08: Angular jobはunit testとE2E typecheckを通過後、production buildで複数の推移的依存と`apps/web/.env`を解決できず失敗
+- 原因: `preserveSymlinks: true`の環境で、推移的なruntime dependencyの`hammerjs`が`node_modules`から解決できなかった
+- 修正: `hammerjs@2.0.8`をルートpackageの直接dependencyに追加
+- 修正後の`corepack pnpm test`は49 files / 108 testsとreport-widgets 3 testsが成功
+- 2026-09-08: Angular jobはunit testとE2E typecheckを通過後、production buildで複数の推移的依存と`.env`を解決できず失敗
 - 原因: `preserveSymlinks: true`によりpnpm isolated store内のpackage実体を基準に推移的依存を解決できなかった
 - 修正: `preserveSymlinks: false`へ変更し、CIで`.env.example`から`.env`を準備するstepを追加。暫定対応だった`hammerjs`の直接dependencyは削除
 - 構造修正後の`corepack pnpm verify`は終了コード0
@@ -575,7 +575,7 @@ cancel / retry / timeout: 対象外
 - clean-room結果: stackup 49 files / 108 tests、report-widgets 3 tests、E2E typecheck、production buildがすべて成功
 - clean-roomのPython venv作成はローカルOSに`python3-venv`がないため未実施。ただし同じ修正後のGitHub Python jobは成功済み
 - 2026-09-08: 修正後のGitHub ActionsでPython / Angular両jobの成功を本人が確認
-- `corepack pnpm web:lint`: 終了コード1、2927 problems（2871 errors / 56 warnings）。既存lint負債のbaselineとして記録
+- `corepack pnpm lint`: 終了コード1、2927 problems（2871 errors / 56 warnings）。既存lint負債のbaselineとして記録
 - 既存コード読解用テンプレート: 本資料「9. 作業証跡」を使用
 
 ## 10. Level 3昇格前の最終確認

@@ -10,13 +10,13 @@
 
 対象は主に次のファイルである。
 
-- `apps/web/src/app/webapp-common/shared/components/base-context-menu/base-context-menu.component.ts`
-- `apps/web/src/app/webapp-common/experiments/shared/components/experiment-menu/experiment-menu.component.ts`
-- `apps/web/src/app/webapp-common/experiments/shared/components/experiment-menu/experiment-menu.component.html`
-- `apps/web/src/app/features/experiments/containers/experiment-menu-extended/experiment-menu-extended.component.ts`
-- `apps/web/src/app/webapp-common/experiments/experiments.component.{ts,html}`
-- `apps/web/src/app/webapp-common/experiments/dumb/experiments-table/experiments-table.component.{ts,html}`
-- `apps/web/src/app/webapp-common/experiments/dumb/experiment-info-header/experiment-info-header.component.{ts,html}`
+- `src/app/webapp-common/shared/components/base-context-menu/base-context-menu.component.ts`
+- `src/app/webapp-common/experiments/shared/components/experiment-menu/experiment-menu.component.ts`
+- `src/app/webapp-common/experiments/shared/components/experiment-menu/experiment-menu.component.html`
+- `src/app/features/experiments/containers/experiment-menu-extended/experiment-menu-extended.component.ts`
+- `src/app/webapp-common/experiments/experiments.component.{ts,html}`
+- `src/app/webapp-common/experiments/dumb/experiments-table/experiments-table.component.{ts,html}`
+- `src/app/webapp-common/experiments/dumb/experiment-info-header/experiment-info-header.component.{ts,html}`
 
 調査時点は 2026-09-13、使用中の Angular は `^22.1.5` である。
 
@@ -152,7 +152,7 @@ flowchart LR
 定義箇所:
 
 ```text
-apps/web/src/app/webapp-common/shared/components/base-context-menu/base-context-menu.component.ts:20
+src/app/webapp-common/shared/components/base-context-menu/base-context-menu.component.ts:20
 ```
 
 主な責務は次のとおり。
@@ -187,7 +187,7 @@ openMenu(position: { x: number; y: number}) {
 定義箇所:
 
 ```text
-apps/web/src/app/webapp-common/experiments/shared/components/experiment-menu/experiment-menu.component.ts:97
+src/app/webapp-common/experiments/shared/components/experiment-menu/experiment-menu.component.ts:97
 ```
 
 ```ts
@@ -248,7 +248,7 @@ export class ExperimentMenuComponent extends BaseContextMenuComponent {
 定義は非常に短い。
 
 ```text
-apps/web/src/app/features/experiments/containers/experiment-menu-extended/experiment-menu-extended.component.ts:11-29
+src/app/features/experiments/containers/experiment-menu-extended/experiment-menu-extended.component.ts:11-29
 ```
 
 ```ts
@@ -315,7 +315,7 @@ public contextMenu = computed(() => this.contextMenuExtended().contextMenu());
 対象箇所:
 
 ```text
-apps/web/src/app/webapp-common/experiments/shared/components/experiment-menu/experiment-menu.component.html:136
+src/app/webapp-common/experiments/shared/components/experiment-menu/experiment-menu.component.html:136
 ```
 
 ```html
@@ -373,8 +373,8 @@ apps/web/src/app/webapp-common/experiments/shared/components/experiment-menu/exp
 現在確認できる利用箇所は次の2つで、どちらも開始・終了タグ間が空である。
 
 ```text
-apps/web/src/app/webapp-common/experiments/experiments.component.html:141-161
-apps/web/src/app/webapp-common/experiments/dumb/experiment-info-header/experiment-info-header.component.html:85-99
+src/app/webapp-common/experiments/experiments.component.html:141-161
+src/app/webapp-common/experiments/dumb/experiment-info-header/experiment-info-header.component.html:85-99
 ```
 
 したがって現在の描画は、概念的には次のようになる。

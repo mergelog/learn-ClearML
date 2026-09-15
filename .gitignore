@@ -1,17 +1,58 @@
 .env
-apps/web/.env
-.idea/
-.vscode/
-node_modules/
-apps/web/node_modules/
-apps/web/build/
-apps/web/.angular/
-coverage/
-playwright-report/
-test-results/
-.venv/
-.generated/
+
+# Angular output and caches
+/build*
+/dist
+/tmp
+/out-tsc
+/gen-code
+/src/__ngcc_entry_points__.json
+/.angular/cache
+/.sass-cache
+/connect.lock
+/coverage
+/.stryker-tmp
+/reports/mutation
+/reports/tests
+/reports/e2e
+/playwright-report
+/test-results
+/libpeerconnection.log
+/typings
+
+# Dependencies
+/node_modules
+
+# Python
+/.venv
+/.generated
 __pycache__/
 *.py[cod]
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vim/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# E2E generated files
+/e2e/*.js
+/e2e/*.map
+
+# Logs and system files
+npm-debug.log
+testem.log
+yarn-error.log
+.DS_Store
+Thumbs.db
 
 AGENTS.local.md

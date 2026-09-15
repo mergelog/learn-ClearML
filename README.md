@@ -14,7 +14,8 @@ Workers・Queues画面: https://www.clear.ml/docs/latest/docs/webapp/webapp_work
 
 ```text
 .
-├── apps/web/             # Angular 22版 ClearML Web
+├── src/                  # Angular 22版 ClearML Web
+├── e2e/                  # AngularのE2Eテスト
 ├── infra/clearml/        # ClearML Server用Docker Compose
 ├── ml/                   # 登録済みDatasetを使う学習コード
 ├── tools/                # 上流データ準備（テストデータ作成）スクリプト
@@ -36,16 +37,16 @@ Workers・Queues画面: https://www.clear.ml/docs/latest/docs/webapp/webapp_work
 
 ```bash
 cp .env.example .env
-cp apps/web/.env.example apps/web/.env
+cp .env.example .env
 ```
 
-PrimeUIのライセンスキーは `apps/web/.env` に設定します。
+PrimeUIのライセンスキーは `.env` に設定します。
 
 ```dotenv
 PRIMEUI_LICENSE=取得したライセンスキー
 ```
 
-この値はAngularのブラウザ向けバンドルに含まれます。`apps/web/.env` にはPrimeUIライセンスキー以外の秘密情報を設定しないでください。
+この値はAngularのブラウザ向けバンドルに含まれます。`.env` にはPrimeUIライセンスキー以外の秘密情報を設定しないでください。
 
 依存パッケージをインストールします。
 
@@ -198,7 +199,7 @@ Dataset Versionの未指定や比率の誤りは、ClearML Taskを作成する�
 ### 4. Angularを起動する
 
 ```bash
-corepack pnpm web:start
+corepack pnpm start
 ```
 
 Angularは `0.0.0.0:4200` で起動します。
@@ -218,10 +219,10 @@ Angularは `0.0.0.0:4200` で起動します。
 
 ```bash
 # Angularの本番ビルド
-corepack pnpm web:build
+corepack pnpm build
 
 # seedスクリプトのテスト
-corepack pnpm test
+corepack pnpm tools:test
 
 # 半導体データ生成用Python環境の準備
 corepack pnpm python:setup
@@ -239,7 +240,7 @@ corepack pnpm ml:train -- --dataset-version 1.0.0
 corepack pnpm ml:test
 
 # AngularのLint
-corepack pnpm web:lint
+corepack pnpm lint
 
 # ClearML Serverのログを表示
 corepack pnpm backend:logs
@@ -268,7 +269,7 @@ corepack pnpm backend:down
 | `CLEARML_API_SECRET_KEY` | 未設定 | 同上。seed・学習コマンドは2つ揃っていない場合にエラーとします |
 | `SEMICONDUCTOR_SEED_OUTPUT` | `.generated/semiconductor` | 半導体seedの出力先 |
 | `SEMICONDUCTOR_RANDOM_SEED` | `20260904` | 半導体seedが生成するデータのrandom seed |
-| `PRIMEUI_LICENSE` | 未設定 | `apps/web/.env`。PrimeUIのライセンスキー |
+| `PRIMEUI_LICENSE` | 未設定 | `.env`。PrimeUIのライセンスキー |
 
 認証キーは学習コマンドのTask Parametersには記録されません。未設定の場合はClearML SDKの設定ファイル（`~/clearml.conf`）にフォールバックします。
 
@@ -282,7 +283,7 @@ CLEARML_API_PORT=8008
 CLEARML_FILES_PORT=8081
 ```
 
-Angularのポートは [apps/web/package.json](apps/web/package.json) の `start` コマンドで設定しています。
+Angularのポートは [package.json](package.json) の `start` コマンドで設定しています。
 
 ## ブラウザに400エラーが表示される場合
 
@@ -298,6 +299,6 @@ ChromeのDevToolsで `Application`、`Storage` の順に開き、
 
 ## 補足
 
-- Angular開発サーバーからのAPIリクエストは `apps/web/proxy.config.mjs` により `http://localhost:8008` へ転送されます。
+- Angular開発サーバーからのAPIリクエストは `proxy.config.mjs` により `http://localhost:8008` へ転送されます。
 - ClearMLのデータはDockerのnamed volumeに保存されます。
 - `backend:down` ではデータは削除されません。
